@@ -4,7 +4,7 @@ All requests must be send via TCP in the following format
 
     signature|nonce|userid|requestID|requestData
 
-every request must end with <ENDOFDATA>
+every request must end with "<"ENDOFDATA">"
 
 You must sign "nonce|userid|requestID|requestData" with your RSA key and provide your signature with all requests.
 
