@@ -25,16 +25,15 @@ If there is an error, the server returns an error message starting with "XError:
 
 ## USE Another API Account
 
-
-By default you use the native API Account 0.  If you want to use a different API Account you registered, you have to add 1000 * API Account ID  to the request ID.
+By default you use the native API Account 0.  If you want to use a different API Account, you have to add 1000 * API Account ID  to the request ID. 
 
 Example:
 
-If you like to get your balance using API Account #5 you call:
+If you like to get your balance using API Account #1 you call:
 
-signature|nonce|userid|5022|
+signature|nonce|userid|1022|
 
-Note that you need to register API Account #5 before you can use it.
+Note that you need to register API Account #1 via the fairlay website before you can use it. Normal users do not have the private key to use their native API Account #0.
 
 
 ## GETPUBLICKEY
@@ -46,6 +45,7 @@ Response:  returns the server's public key in XML format.
 ## GETSERVERTIME 
 
 reqID: 2
+
 reqData: None
 
 Response: returns the server's time in ticks.
@@ -57,6 +57,7 @@ Note: the server time can also be interfered from the nonce in every response.
 retrieves a single market
 
 reqID: 6
+
 reqData: long MarketID
 
 response: json encoded MarketX Object
@@ -67,6 +68,7 @@ response: json encoded MarketX Object
 transfers funds to another user / this is also used to request withdrawals
 
 reqID: 81
+
 reqData: json encoded MUserTransfer Object
 
 response: json encoded MUserTransfer Object
@@ -81,6 +83,7 @@ TType:  custom field, can have any int valu
 ## SETAPIACCOUNTTOREADONLY 
 
 reqID: 49
+
 reqData: None
 
 response: "success"
@@ -95,6 +98,7 @@ You can also set your API Account #0 to read only.
 ## GETMARKETSORDERBOOK  
 
 reqID: 67
+
 reqData: json encoded MarketFilter Object
 
 response: long/string Dictionary  with market IDs and orderbooks.
@@ -103,7 +107,9 @@ Example:
 
 signature|nonce|userid|67|{"Cat":0,"RunnerAND":["Arsenal","Chelsea"],"TitleAND":null,"TitleNOT":["Corners","Throwin"],"Comp":"Premier Leag","TypeOR":null,"PeriodOR":[1],"SettleOR":null,"ToSettle":false,"OnlyMyCreatedMarkets":false,"Descr":null,"ChangedAfter":"2016-01-01T22:01:01","SoftChangedAfter":"0001-01-01T00:00:00","OnlyActive":false,"MinPop":0.0,"MaxMargin":103.0,"NoZombie":false,"FromClosT":"2016-05-01T00:00:00","ToClosT":"0001-01-01T00:00:00","FromID":0,"ToID":100,"SortPopular":false}
 
-## CREATEMARKET   TO UPGRADE
+## CREATEMARKET   (NOT UP TO DATE)
+
+https://github.com/Fairlay/CSharpSampleClient-Main-/blob/master/Market.cs
 
 reqID: 11
 reqData: json encoded MarketX Object
@@ -115,39 +121,93 @@ example:
 signature|nonce|userid|11|{"Comp":"SCOTUS","Descr":"This market resolves to Yes, if the Senate confirms Merrick Garland’s Supreme Court nomination before President Obama leaves the office. The resolution date of this market may be accelerated. Bets matched after the antedated resolution date will be voided. https://www.coindesk.com","Title":"Will Senate confirm Merrick Garland's SCOTUS nomination?","CatID":15,"ClosD":"2016-11-01T00:00:00","SettlD":"2017-01-20T00:00:00","Ru":[{"Name":"Yes","InvDelay":0,"VisDelay":6000},{"Name":"No","InvDelay":0,"VisDelay":6000}],"_Type":2,"_Period":1,"SettlT":0,"Comm":0.02,"PrivCreator":784741,"CreatorName":"USERNAME"}
 
 Comp: Competition
-CatID: Category (see A2))
+CatID: Category (for a list of all Categories, please visit https://github.com/Fairlay/CSharpSampleClient-Main-/blob/master/Market.cs)
 ClosD:  Closing Date
 SettlD: Resolution Date
 Ru:  InvDelay must always be 0, VisDelay must always be set to 6000
-_Type: See A2)
-_Period: See A2)
-SettlT:  For settlement types see A2)
-Comm:  0.02 - must always be 0.02.
+_Type: for a list of all MarketTypes please visit https://github.com/Fairlay/CSharpSampleClient-Main-/blob/master/Market.cs
+_Period:  for a list of all MarketPeriods please visit https://github.com/Fairlay/CSharpSampleClient-Main-/blob/master/Market.cs
+SettlT:  for a list of all SettleTypes please visit https://github.com/Fairlay/CSharpSampleClient-Main-/blob/master/Market.cs
+Comm:  0.02 - must always be 0.02 in order to be listed on Fairlay. Please contact info@fairlay.com if you need a reduced commission.
 PrivCreator:  must match your userid
-CreatorName:  must match your Username and is public
+CreatorName:  your public name of your choice
 
 
 ## CANCELALLORDERS 
 
 reqID: 16
+
 reqData: None
 
 response: how many unmatched orders were cancelled:   "5 Orders were cancelled"
 
 cancels all open orders on all markets
 
+## SETLMSRMARKETMAKER 
+
+creates an automated LMSR market maker on a specific market
+
+reqID: 73
+
+reqData: json encoded LMSR Object
+
+response: json encoded LMSR Object
+
+example: 
+
+{"UserID":777888,"MarketID":61659266392,"Runner":5,"Enabled":true,"InitShareLimit":350.0,"B":1300.0,"CancelAll":"2016-06-05T13:34:56", "ShareStop":1400.0,"InitProb":[0.3,0.1,0.2,0.2,0.2],"DiminishBack":[0.01,0.01,0.01,0.0,0.02],"DiminishLay":[0.0,0.0,0.0,0.01,0.01],"coolOffSeconds":36000.0,"coolOffFactor":4.0}
+
+Default values
+{"UserID":[userid],"MarketID":61659266392,"Runner":5,"Enabled":true,"InitShareLimit":300.0,"B":1000.0,"CancelAll":"2016-06-05T13:34:56", "ShareStop":9999.0,"InitProb":[0.2,0.2,0.2,0.2,0.2],"DiminishBack":[0.00,0.00,0.00,0.0,0.00],"DiminishLay":[0.01,0.01,0.01,0.01,0.01],"coolOffSeconds":1.0,"coolOffFactor":2.0}
+
+UserID: must match your userid
+MarketID:  must be provided
+Runner:  # of Runners / must match the # of runners of the market
+Enabled: must be set to true
+InitShareLimit (must be > 1):    Shares that are offered in one order.  Stake + Winnings from each order are 350mBTC
+B (must be > 10):    ~ is proportional to the maxium possible loss of the market maker if it starts at 50/50
+CancelAll (must be set to a future date):   Date where the market maker stops. Set to year 2100 if the mm should run forever
+ShareStop (must be > 1):   amount of exposure in shares before the market maker stops.  Should be set higher than  B in regular cases.
+InitProb:   the initial probability estimation for all runners
+DiminishBack (must be non-negative):   In general the LMSR market maker runs on 0% margin, i.e. it doesn't make any profit.  If more margin should be added, you can worsen the odds for each bid orders for every runner.  0.01 worsens bid odds from  80% to 81%  (or 1.25 to 1.2345)  for example. 
+DiminishLay:   same for all ask orders. 
+
+cool off adds temporary additional margin to markets with increased activity and should be applied to markets that can have exogenous shocks or where real probabilities can deviate from the initial probability distribution. 
+
+coolOffFactor (must be >=1):    if set to 4.0 the odds will worsen 4.0 times more than expected from the usual lmsr market maker.    
+coolOffSeconds (must be >=1):    The time after which the coolOff period will be over. If set to 36000 the additional market margin will reduce step by step over an period of 10 hours. 
+
+If no cool off is required, set coolOffSeconds to 1.
+
+
+Disable a MM by setting Enabled = false and other variables to a valid value. 
+
+## GETLMSRMARKETMAKER 
+
+retrieves all current LMSR Marketmaker
+
+reqID: 70
+
+reqData: -1
+
+response: json encoded marketID/LMSR Dictionary
+
+
+
+### OLD  IGNORE THE TEXT BELOW
+
 ## TRANSFERFUNDS 
 
+transfers funds to another user. This is also used to request withdrawals.
+
 reqID: 81
+
 reqData: json encoded MUserTransfer Object
 
 response: json encoded MUserTransfer Object
 
-transfers funds to another user. This is also used to request withdrawals.
 
 
-## OLD
- 
 This is a free service to scrape all markets on Fairlay. For all POST requests (creating/changing markets and orders) use the paid API.
 * The data is updated every 5 seconds;
 * You have to accept GZIP, DEFLATE in your HEADER;
@@ -169,24 +229,6 @@ For more examples how this API should be used together with our paid API, please
 > `http://31.172.83.53:8080` *(is an alternate server with the same functionality)*
 
 
-## View markets on Fairlay
-
-You can use the market ids to access any market on fairlay directly
-
-> `https://www.fairlay.com/market/MARKETID`
-
-<br/>
-
----
-
-## Methods
-
-### Server Time
-Returns the server time in ticks.
-
-> `http://31.172.83.181:8080/free/time`
-
-<br/>
 
 ### Markets
 Returns JSON encoded list of markets that apply to the given filter.
@@ -282,89 +324,3 @@ Example for all soccer competitions:
 <br/>
 
 
-## A2) DATA Fields
-
-
-```CSharp
-enum MarketPeriod
-        UNDEFINED,
-        FT,
-        FIRST_SET,
-        SECOND_SET,
-        THIRD_SET,
-        FOURTH_SET,
-        FIFTH_SET,
-        FIRST_HALF,
-        SECOND_HALF,
-        FIRST_QUARTER,
-        SECOND_QUARTER,
-        THIRD_QUARTER,
-        FOURTH_QUARTER,
-        FIRST_PERIOD,
-        SECOND_PERIOD,
-        THIRD_PERIOD,
-
-enum StatusType
-        ACTIVE,
-        INPLAY,
-        SUSPENDED,
-        CLOSED,
-        SETTLED,
-        CANCELLED
-
-enum MarketType
-        M_ODDS,
-        OVER_UNDER,
-        OUTRIGHT,
-        GAMESPREAD,
-        SETSPREAD,
-        CORRECT_SCORE,
-        FUTURE,
-        BASICPREDICTION,
-        RESERVED2,
-        RESERVED3,
-        RESERVED4,
-        RESERVED5,
-        RESERVED6
-
-enum SettleType
-        BINARY,
-        DECIMAL
-
-Category:
-        SOCCER = 1;
-        TENNIS = 2;
-        GOLF = 3;
-        CRICKET = 4;
-        RUGBYUNION = 5;
-        BOXING = 6;
-        HORSERACING = 7;
-        MOTORSPORT = 8;
-        SPECIAL = 10;
-        RUGBYLEAGUE = 11;
-        BASKETBALL = 12;
-        AMERICANFOOTBALL = 13;
-        BASEBALL = 14;
-        POLITICS = 15;
-        FINANCIAL = 16;
-        GREYHOUND = 17;
-        VOLLEYBALL = 18;
-        HANDBALL = 19;
-        DARTS = 20;
-        BANDY = 21;
-        WINTERSPORTS = 22;
-        BOWLS = 24;
-        POOL = 25;
-        SNOOKER = 26;
-        TABLETENNIS = 27;
-        CHESS = 28;
-        HOCKEY = 30;
-        FUN = 31;
-        ESPORTS = 32;
-        RESERVED4 = 34;
-        MIXEDMARTIALARTS = 35;
-        RESERVED6 = 36;
-        RESERVED = 37;
-        CYCLING = 38;
-        RESERVED9 = 39;
-```
