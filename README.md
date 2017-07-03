@@ -20,6 +20,22 @@ The response is usually JSON-encoded:
 
 > rfV2ylPLbDbBKEy0yi71xZS/fZbyozd7+smpit1cR8ZeB0qo+stRDttTkCxqF0towkS0bf3lkg4amSbvka6K//QX/F1BHdFNqpkFXQHB9jh2eyR2WgXblKeGRbgw+mma+1P/kKNBtf3qhOUiqOgzONwlTEusiLzqHil6HLTQTKY=|635972681796848020|66|{"PrivReservedFunds":334.0493827437273000001,"MaxFunds":0.0,"PrivUsedFunds":207.1029999999836,"AvailableFunds":126.9463827437437000001}
 
+If there is an error, the server returns an error message starting with "XError: " for general errors or "YError: " if there was an error in a subtask of a bulk change order reqeust. 
+
+
+## USE Another API Account
+
+
+By default you use the native API Account 0.  If you want to use a different API Account you registered, you have to add 1000 * API Account ID  to the request ID.
+
+Example:
+
+If you like to get your balance using API Account #5 you call:
+
+signature|nonce|userid|5022|
+
+Note that you need to register API Account #5 before you can use it.
+
 
 ## GETPUBLICKEY
 
@@ -27,13 +43,107 @@ The response is usually JSON-encoded:
 
 Response:  returns the server's public key in XML format.
 
-## GETSERVERTIME
+## GETSERVERTIME 
 
-signature|nonce|userid|2
+reqID: 2
+reqData: None
 
 Response: returns the server's time in ticks.
 
 Note: the server time can also be interfered from the nonce in every response.
+
+## GETMARKET 
+
+retrieves a single market
+
+reqID: 6
+reqData: long MarketID
+
+response: json encoded MarketX Object
+
+## TRANSFERFUNDS 
+
+
+transfers funds to another user / this is also used to request withdrawals
+
+reqID: 81
+reqData: json encoded MUserTransfer Object
+
+response: json encoded MUserTransfer Object
+
+example:
+signature|nonce|userid|81| {"FromU":1001001,"ToU":1001002,"Descr":"test transfer","TType":1,"Amount":2.0}
+
+FromU: must match your userid
+ToU: must be an existing user
+TType:  custom field, can have any int valu
+
+## SETAPIACCOUNTTOREADONLY 
+
+reqID: 49
+reqData: None
+
+response: "success"
+
+Example:
+
+signature|nonce|userid|5049|
+
+This will permanently set your API Account #5 to Read Only. Note that this cannot be undone.
+You can also set your API Account #0 to read only. 
+
+## GETMARKETSORDERBOOK  
+
+reqID: 67
+reqData: json encoded MarketFilter Object
+
+response: long/string Dictionary  with market IDs and orderbooks.
+
+Example:
+
+signature|nonce|userid|67|{"Cat":0,"RunnerAND":["Arsenal","Chelsea"],"TitleAND":null,"TitleNOT":["Corners","Throwin"],"Comp":"Premier Leag","TypeOR":null,"PeriodOR":[1],"SettleOR":null,"ToSettle":false,"OnlyMyCreatedMarkets":false,"Descr":null,"ChangedAfter":"2016-01-01T22:01:01","SoftChangedAfter":"0001-01-01T00:00:00","OnlyActive":false,"MinPop":0.0,"MaxMargin":103.0,"NoZombie":false,"FromClosT":"2016-05-01T00:00:00","ToClosT":"0001-01-01T00:00:00","FromID":0,"ToID":100,"SortPopular":false}
+
+## CREATEMARKET   TO UPGRADE
+
+reqID: 11
+reqData: json encoded MarketX Object
+
+response: long market ID
+
+example:
+
+signature|nonce|userid|11|{"Comp":"SCOTUS","Descr":"This market resolves to Yes, if the Senate confirms Merrick Garland’s Supreme Court nomination before President Obama leaves the office. The resolution date of this market may be accelerated. Bets matched after the antedated resolution date will be voided. https://www.coindesk.com","Title":"Will Senate confirm Merrick Garland's SCOTUS nomination?","CatID":15,"ClosD":"2016-11-01T00:00:00","SettlD":"2017-01-20T00:00:00","Ru":[{"Name":"Yes","InvDelay":0,"VisDelay":6000},{"Name":"No","InvDelay":0,"VisDelay":6000}],"_Type":2,"_Period":1,"SettlT":0,"Comm":0.02,"PrivCreator":784741,"CreatorName":"USERNAME"}
+
+Comp: Competition
+CatID: Category (see A2))
+ClosD:  Closing Date
+SettlD: Resolution Date
+Ru:  InvDelay must always be 0, VisDelay must always be set to 6000
+_Type: See A2)
+_Period: See A2)
+SettlT:  For settlement types see A2)
+Comm:  0.02 - must always be 0.02.
+PrivCreator:  must match your userid
+CreatorName:  must match your Username and is public
+
+
+## CANCELALLORDERS 
+
+reqID: 16
+reqData: None
+
+response: how many unmatched orders were cancelled:   "5 Orders were cancelled"
+
+cancels all open orders on all markets
+
+## TRANSFERFUNDS 
+
+reqID: 81
+reqData: json encoded MUserTransfer Object
+
+response: json encoded MUserTransfer Object
+
+transfers funds to another user. This is also used to request withdrawals.
 
 
 ## OLD
