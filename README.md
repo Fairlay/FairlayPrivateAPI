@@ -1,4 +1,4 @@
-The Fairlay Private API allows you to POST requests (creating/changing markets and orders, transfering funds, etc.), costs 1mBTC per 100.000 requests, [see below](https://github.com/Fairlay/FairlayDotNetClient#private-api) on how to create your developer API account. This is the low level documentation, if you need a working sample or are more comfortable reading code rather than specifications, head over to [https://github.com/Fairlay/FairlayDotNetClient](https://github.com/Fairlay/FairlayDotNetClient)
+The Fairlay Private API allows you to POST requests (creating/changing markets and orders, transfering funds, etc.), costs 0.1mBTC per 100.000 requests, [see below](https://github.com/Fairlay/FairlayDotNetClient#private-api) on how to create your developer API account. This is the low level documentation, if you need a working sample or are more comfortable reading code rather than specifications, head over to [https://github.com/Fairlay/FairlayDotNetClient](https://github.com/Fairlay/FairlayDotNetClient)
 
 All requests must be send via TCP in the following format
 
