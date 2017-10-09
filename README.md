@@ -180,32 +180,21 @@ is a combination of cancelorder and createorder
 Returns: unmatched order object
 
 
-## BULKCHANGEORDER MAKER 61 (experts)
+## BULKCHANGEORDER MAKER 109 (experts)
 
-Changes, cancels and creates many orders at once.  All newly created orders will be of type MAKER (See A2)). All changed orders will keep their type.
+Changes, cancels and creates many orders at once.  
 
-> signature|nonce|userid|61|changeorderDictionary
+> signature|nonce|userid|109|Array of REQChangeOrder object
 
-example for changeorderDictionary:
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/REQChangeOrder.cs
 
-> [{"Mid":73911957931,"Rid":13,"Oid":635980470611670494,"Am":1665.0,"Pri":5.587,"Sub":null,"Boa":0,"Mct":0},{"Mid":73395769791,"Rid":0,"Oid":635980470611720522,"Am":9355.0,"Pri":0.0,"Sub":null,"Boa":1,"Mct":0},{"Mid":73569399509,"Rid":0,"Oid":6359804706645670494,"Am":193.0,"Pri":49.800,"Boa":0,"Mct":0},{"Mid":73570791053,"Rid":2,"Oid":-1,"Am":1514.0,"Pri":6.954,"Sub":"myLine","Boa":1,"Mct":6000}]
+example:
 
-Mid: market ID
-Rid:  Runner ID
-Oid:  Order ID (set to -1 if only a new order shall be created and no old order is to be replaced)
-Am:  Amount
-Pri: Price (use price of 0.0 to just cancel the order)
-Sub:  custom string
-Boa: bid or ask order
-Mct: pending period. Should be set from 0 to 6000 ms. 6000ms as default.
+> [{"Mid":73911957931,"Rid":13,"Oid":635980470611670494,"Type":1,"Am":1665.0,"Pri":5.587,"Sub":null,"Boa":0,"Mct":0},{"Mid":73395769791,"Rid":0,"Oid":635980470611720522,"Am":9355.0,"Pri":0.0,"Sub":null,"Boa":1,"Mct":0},{"Mid":73569399509,"Rid":0,"Oid":6359804706645670494,"Am":193.0,"Pri":49.800,"Boa":0,"Mct":0},{"Mid":73570791053,"Rid":2,"Oid":-1,"Am":1514.0,"Pri":6.954,"Sub":"myLine","Boa":1,"Mct":6000}]
 
-Returns: a list of strings that contains specific answers to each create order request, in general the unmatched order that was created.  
 
-example response:
 
-> ["{\"Price\":5.587,\"RemAmount\":1665.0,\"State\":0,\"BidOrAsk\":0,\"PrivAmount\":1665.0,\"PrivSubUser\":\"myLines\",\"PrivCancelAt\":3155378975999999999,\"makerCT\":6000,\"_Type\":1,\"PrivID\":635980480385298548,\"PrivUserID\":777888}","Order cancelled","{\"Price\":49.800,\"RemAmount\":193.0,\"State\":0,\"BidOrAsk\":0,\"PrivAmount\":193.0,\"PrivSubUser\":\"myLines\",\"PrivCancelAt\":3155378975999999999,\"makerCT\":6000,\"_Type\":1,\"PrivID\":635980480385298550,\"PrivUserID\":777888}","{\"Price\":6.954,\"RemAmount\":1514.0,\"State\":0,\"BidOrAsk\":1,\"PrivAmount\":1514.0,\"PrivSubUser\":\"myLines\",\"PrivCancelAt\":3155378975999999999,\"makerCT\":6000,\"_Type\":1,\"PrivID\":635980480385418585,\"PrivUserID\":777888}"]
-
-Note that the response does not return the market id and runner id - this must be extracted from the user request
+Returns: an array of REQChangeOrder objects. The Res property of each object contains the status of each bet. Res is either a serialized UnmatchedOrder  order object  (https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/UnmatchedOrder.cs)  or contains an error message like  (Res = ) "YError: Market closed"  for example.
 
 ## GETNEW 24
 
