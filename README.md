@@ -1,5 +1,5 @@
 
-#Introduction
+# Introduction
 
 The Fairlay Private API allows you to POST requests (creating/changing markets and orders, transfering funds, etc.), costs 0.1mBTC per 100.000 requests, see below on how to create your developer API account. This is the low level documentation, if you need a working sample or are more comfortable reading code rather than specifications, head over to https://github.com/Fairlay/FairlayDotNetClient
 
@@ -13,19 +13,21 @@ You must sign ```nonce|userid|requestID|requestData``` with your RSA key and pro
 
 This is a sample GETBALANCE Request:
 
-```uiskPc9GqWAdUt1hJ+4VeuxyCNtbs0iY3kSbGQZ7HvwHkCe5H2n9UcX5v1Gl7Mb99XnhBiVzkne5bdkgmLdnlzzEBPLYnt8zwWHcqxXvIYiDpLQhsVfdkvyYwH1zgrUwAZu08VmY0ax34zxjXJdK68TVs9Y1m7akXkw5/NvIwXk=|635972931146604657|100012|22|<ENDOFDATA>``` 
+```
+uiskPc9GqWAdUt1hJ+4VeuxyCNtbs0iY3kSbGQZ7HvwHkCe5H2n9UcX5v1Gl7Mb99XnhBiVzkne5bdkgmLdnlzzEBPLYnt8zwWHcqxXvIYiDpLQhsVfdkvyYwH1zgrUwAZu08VmY0ax34zxjXJdK68TVs9Y1m7akXkw5/NvIwXk=|635972931146604657|100012|22|<ENDOFDATA>
+``` 
 
 All answers are returned in the following format
-
-``` signature|nonce|serverID|Response ``` 
-
+```
+signature|nonce|serverID|Response 
+``` 
 The response is usually JSON-encoded:
 
 ``` rfV2ylPLbDbBKEy0yi71xZS/fZbyozd7+smpit1cR8ZeB0qo+stRDttTkCxqF0towkS0bf3lkg4amSbvka6K//QX/F1BHdFNqpkFXQHB9jh2eyR2WgXblKeGRbgw+mma+1P/kKNBtf3qhOUiqOgzONwlTEusiLzqHil6HLTQTKY=|635972681796848020|66|{"PrivReservedFunds":334.049,"MaxFunds":0.0,"PrivUsedFunds":207.12,"AvailableFunds":126.946}``` 
 
 If there is an error, the server returns an error message starting with **XError:** for general errors or **YError:** if there was an error in a subtask of a bulk change order request. 
 
-###Remember to use (YOUR API ID*1000)+Request ID  on requests. Example: If you create your API accont on Fairlay, site will set an ID to it, usually first API ID is 1. So a request to Get Orderbook with this account will be 1001. 
+### Remember to use (YOUR API ID*1000)+Request ID  on requests. Example: If you create your API accont on Fairlay, site will set an ID to it, usually first API ID is 1. So a request to Get Orderbook with this account will be 1001. 
 
 # API Calls
 
@@ -39,9 +41,8 @@ If there is an error, the server returns an error message starting with **XError
 * [GET MARKETS](#7): 7
 * [CREATE MARKET](#11): 11
 * [CLEAR ALL ORDERS](#16): 16
-* [CREATE ORDER](#12): 12
+* [CREATE ORDER](#62): 62
 * [CREATE ORDER WITH CANCEL TIME](#13): 13
-* [CREATE LAY ORDER WITH LIABILITY](#51): 51
 * [CANCEL ORDER](#15): 15
 * [CANCEL ORDER WITH MATCHES](#75): 75
 * [CANCEL MATCHED ORDER](#09): 9
@@ -79,7 +80,30 @@ Response:  returns the server's public key in XML format.
 
 Returns:  User info object
 
+
 Note: Use  https://superdry.apphb.com/tools/online-rsa-key-converter  to convert PEM RSA keys to XML format.
+
+## <a name="21">GET ME</a> (21) 
+
+```
+signature|nonce|userid|21
+```
+Returns:  User info object containing last connections, withdraw adresses, market makers, funds, API Accounts, screen name and ID.
+
+## <a name="22">GET MY BALANCE</a> (22) 
+
+```
+signature|nonce|userid|22
+```
+Returns:  JSON object containing account balance information:
+
+**PrivReservedFunds**: Total account funds in mBTC.
+**PrivUsedFunds**: Amount of balance placed on opened markets in mBTC.
+**AvailableFunds**: Amount of balance available to use in mBTC.
+**SettleUsed**: Amount retained due to settlement in mBTC.
+**CreatorUsed**: Amount retained by market creation in mBTC.
+**RemainingRequests**: Requests remaining before new charge.
+
 
 ## <a name="49">SET API ACCOUNT TO READONLY</a> (49)
 
@@ -137,7 +161,29 @@ This is a return from 2 markets with 2 runners.
 ## <a name="7">GET MARKETS</a> (7)
 
 ```
-signature|nonce|userid|7|{"Cat":0,"RunnerAND":["Arsenal","Chelsea"],"TitleAND":null,"TitleNOT":["Corners","Throwin"],"Comp":"Premier Leag","TypeOR":null,"PeriodOR":[1],"SettleOR":null,"ToSettle":false,"OnlyMyCreatedMarkets":false,"Descr":null,"ChangedAfter":"2016-01-01T22:01:01","SoftChangedAfter":"0001-01-01T00:00:00","OnlyActive":false,"MinPop":0.0,"MaxMargin":103.0,"NoZombie":false,"FromClosT":"2016-05-01T00:00:00","ToClosT":"0001-01-01T00:00:00","FromID":0,"ToID":100,"SortPopular":false}
+signature|nonce|userid|7|{
+"Cat":0,
+"RunnerAND":["Arsenal","Chelsea"],
+"TitleAND":null,
+"TitleNOT":["Corners","Throwin"],
+"Comp":"Premier Leag",
+"TypeOR":null,
+"PeriodOR":[1],
+"SettleOR":null,
+"ToSettle":false,
+"OnlyMyCreatedMarkets":false,
+"Descr":null,
+"ChangedAfter":"2016-01-01T22:01:01",
+"SoftChangedAfter":"0001-01-01T00:00:00",
+"OnlyActive":false,
+"MinPop":0.0,
+"MaxMargin":103.0,
+"NoZombie":false,
+"FromClosT":"2016-05-01T00:00:00",
+"ToClosT":"0001-01-01T00:00:00",
+"FromID":0,
+"ToID":100,
+"SortPopular":false}
 ```
 
 Returns all markets that apply to the given filter. 
@@ -165,10 +211,33 @@ Returns: market object
 ## <a name="67">GET MARKETS ORDERBOOK</a> (67)
 
 ```
-signature|nonce|userid|67|{"Cat":0,"RunnerAND":["Arsenal","Chelsea"],"TitleAND":null,"TitleNOT":["Corners","Throwin"],"Comp":"Premier Leag","TypeOR":null,"PeriodOR":[1],"SettleOR":null,"ToSettle":false,"OnlyMyCreatedMarkets":false,"Descr":null,"ChangedAfter":"2016-01-01T22:01:01","SoftChangedAfter":"0001-01-01T00:00:00","OnlyActive":false,"MinPop":0.0,"MaxMargin":103.0,"NoZombie":false,"FromClosT":"2016-05-01T00:00:00","ToClosT":"0001-01-01T00:00:00","FromID":0,"ToID":100,"SortPopular":false}
+signature|nonce|userid|67|{
+"Cat":0,
+"RunnerAND":["Arsenal","Chelsea"],
+"TitleAND":null,
+"TitleNOT":["Corners","Throwin"],
+"Comp":"Premier Leag",
+"TypeOR":null,
+"PeriodOR":[1],
+"SettleOR":null,
+"ToSettle":false,
+"OnlyMyCreatedMarkets":false,
+"Descr":null,
+"ChangedAfter":"2016-01-01T22:01:01",
+"SoftChangedAfter":"0001-01-01T00:00:00",
+"OnlyActive":false,
+"MinPop":0.0,
+"MaxMargin":103.0,
+"NoZombie":false,
+"FromClosT":"2016-05-01T00:00:00",
+"ToClosT":"0001-01-01T00:00:00",
+"FromID":0,
+"ToID":100,
+"SortPopular":false}
 ```
 
 Returns: A long-string Dictionary with the marketID - orderbook key-value pair.
+
 
 ## <a name="11">CREATE MARKET</a> (11) 
 ```
@@ -222,6 +291,7 @@ example:
 **pendingperiod**: should be set to 6000ms
 
 Returns: unmatched order object
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/UnmatchedOrder.cs
 
 ## <a name="75">CANCEL ORDER</a> (75)
 
@@ -230,6 +300,15 @@ signature|nonce|userid|75|marketid|runnerid|orderid
 ```
 
 Returns: a list of all corresponding matched orders objects for the cancelled unmatched order.
+
+## <a name="10">CANCEL MARKET ORDERS</a> (10)
+
+```
+signature|nonce|userid|10
+```
+
+Returns:  how many unmatched orders were cancelled:   
+```2 Orders were cancelled```
 
 ## <a name="16">CANCEL ALL ORDERS</a> (16)
 
@@ -250,6 +329,7 @@ signature|nonce|userid|17|marketid|runnerid|orderid|price|amount
 ```
 
 Returns: unmatched order object
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/UnmatchedOrder.cs
 
 
 ## <a name="109">BULK CHANGE ORDER MAKER</a> (109)
@@ -279,6 +359,31 @@ signature|nonce|userid|24|TimeinTicks
 
 Returns: all unmatched orders and matched orders that were created, cancelled or changed after the given time.
 
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/ReturnUOrder.cs
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/ReturnMOrder.cs
+
+## <a name="25">GET UNMATCHED ORDERS</a> (25)
+
+```
+signature|nonce|userid|25|TimeinTicks
+```
+
+**TimeinTicks**: Time given in ticks, all orders after the given tick will be returned
+
+Returns: all unmatched orders that were created, cancelled or changed after the given time.
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/ReturnUOrder.cs
+
+## <a name="27">GET MATCHED ORDERS</a> (27)
+
+```
+signature|nonce|userid|27|TimeinTicks
+```
+
+**TimeinTicks**: Time given in ticks, all orders after the given tick will be returned
+
+Returns: all matched orders that were created, cancelled or changed after the given time.
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/ReturnMOrder.cs
+
 ## <a name="81">TRANSFER FUNDS/WITHDRAW</a> (81)
 
 ```
@@ -296,6 +401,20 @@ Example for transfer object:
 **TType**:  custom field, can have any int value
 
 Returns:  transferobject if successful
+
+
+## <a name="82">GET USER TRANSACTIONS</a> (82)
+
+Get all user transactions since given time in ticks.
+
+```
+signature|nonce|userid|82|TimeinTicks
+```
+
+Returns: An array of transactions.
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/MUserTransfer.cs
+Every transaction has currency IDs in it. 
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/CurrencyIds.cs
 
 
 ## <a name="73">SET MARKET MAKER</a> (73)
@@ -321,6 +440,7 @@ example for lmsrmarketmakerobject:
 "DiminishLay":[0.0,0.0,0.0,0.01,0.01],
 "coolOffSeconds":36000.0,"coolOffFactor":4.0}
 ```
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/LMSR.cs
 
 Default values:
 ```
@@ -368,7 +488,8 @@ example for lmsrmarketmakerobject:
 ```
 {"UserID":777888,"MarketID":61659266392,"Runner":5,"Enabled":true,"InitShareLimit":350.0,"B":1300.0,"CancelAll":"2016-06-05T13:34:56", "ShareStop":1400.0,"InitProb":[0.3,0.1,0.2,0.2,0.2],"DiminishBack":[0.01,0.01,0.01,0.0,0.02],"DiminishLay":[0.0,0.0,0.0,0.01,0.01],"coolOffSeconds":36000.0,"coolOffFactor":4.0}
 ```
-## CHANGETIME 84
+
+## <a name="84">CHANGE MARKET CLOSING TIME</a> (84)
 
 Changes Closing and Settlement Date
 
@@ -378,87 +499,50 @@ signature|nonce|userid|84|ChangeTimeObject
 
 Example:
 ```
-{"MID":76650963889,"ClosD":"2016-06-11T01:00:00Z","SetlD":"2016-06-11T03:00:00Z"}
+{"MID":76650963889,
+"ClosD":"2016-06-11T01:00:00Z",
+"SetlD":"2016-06-11T03:00:00Z"}
 ```
+https://github.com/Fairlay/FairlayDotNetClient/blob/master/src/Private/Datatypes/ChangeTimeReq.cs
 
 Returns: MarketTime changed.
 
   
-## MENT 85
-gets all bankroll adjustments after a given time. 
+## <a name="85">GET SETTLEMENTS</a> (85)
 
-> signature|nonce|userid|85|timeinticks
+Gets all bankroll adjustments after a given time. 
+```
+signature|nonce|userid|85|timeinticks
+```
+Returns: A JSON encoded Statement Object:
 
-returns a JSON encoded Statement Object:
+**long ID**:  is not unique globally; is the time in milliseconds from Jan 1th 2016 
+**Descr** :  optional description, contains the market ID in case of a settlement.
+**T** :  0-99  stands for a transfer (same like ttype in transfer object)  includes deposits & cashouts, 100 admin, 200  market  settlement w/o commission, 201 market settlement with commission, 250 unsettlement, 300 commission bonus)
+**Am**  : amount credited
+**Bank** : total bankroll after the adjustment.
 
-long ID:  is not unique globally; is the time in milliseconds from Jan 1th 2016 
-string Descr :  optional description, contains the market ID in case of a settlement.
-int T :  0-99  stands for a transfer (same like ttype in transfer object)  includes deposits & cashouts, 100 admin, 200  market  settlement w/o commission, 201 market settlement with commission, 250 unsettlement, 300 commission bonus)
-decimal Am  : amount credited
-decimal Bank : total bankroll after the adjustment.
-
-## SETTLEMARKET 86
+## <a name="86">SETTLE MARKET</a> (86)
 
 Settles a given market. Note that the total betting volume of the market will be deducted from the available balance for 2 to 3 days. Unless the user has special rights, a user can only settle markets he created. 
-
-> signature|nonce|userid|86|SettleRequestObject
-
-returns  "Market settled"  or some kind of "XError: ..."
-
+```
+signature|nonce|userid|86|SettleRequestObject
+```
 Example:
+```
+signature|nonce|userid|86|{
+"Mid":77588905280,
+"Runner":0,
+"Win":1,
+"Half":false,
+"Dec":0.0,
+"ORed":0.0}
+```
+**Mid**:  is the market ID
+**Runner**:  determines the Runner which won (0 means that the 1st Runner won, 1 means that the 2nd Runner won and so on). If a market shall be voided the Runner must be set to -1
+**Win**:  Must be set to 1
+**Half**:  should be set to "false". Only needed for  +- 0.25  and +-0.75  soccer  spread and over/under markets. If a market is half won or half lost, set Half to "true";
+**Dec**:   If the market is not binary, but has a decimal outcome, this needs to be set to the result.  [Not supported yet]
+**ORed**:   Odds reduction  [only for Horse racing - not needed in general]
 
-> 86|{"Mid":77588905280,"Runner":0,"Win":1,"Half":false,"Dec":0.0,"ORed":0.0}
-
-Mid:  is the market ID
-Runner:  determines the Runner which won (0 means that the 1st Runner won, 1 means that the 2nd Runner won and so on). If a market shall be voided the Runner must be set to -1
-Win:  Must be set to 1
-Half:  should be set to "false". Only needed for  +- 0.25  and +-0.75  soccer  spread and over/under markets. If a market is half won or half lost, set Half to "true";
-Dec:   If the market is not binary, but has a decimal outcome, this needs to be set to the result.  [Not supported yet]
-ORed:   Odds reduction  [only for Horse racing - not needed in general]
-
-
-## SETLMSRMARKETMAKER 
-
-creates an automated LMSR market maker on a specific market
-
-reqID: 73
-
-reqData: json encoded LMSR Object
-
-response: json encoded LMSR Object
-
-example: 
-
-> {"UserID":777888,"MarketID":61659266392,"Runner":5,"Enabled":true,"InitShareLimit":350.0,"B":1300.0,"CancelAll":"2016-06-05T13:34:56", "ShareStop":1400.0,"InitProb":[0.3,0.1,0.2,0.2,0.2],"DiminishBack":[0.01,0.01,0.01,0.0,0.02],"DiminishLay":[0.0,0.0,0.0,0.01,0.01],"coolOffSeconds":36000.0,"coolOffFactor":4.0}
-
-Default values
-> {"UserID":[userid],"MarketID":61659266392,"Runner":5,"Enabled":true,"InitShareLimit":300.0,"B":1000.0,"CancelAll":"2016-06-05T13:34:56", "ShareStop":9999.0,"InitProb":[0.2,0.2,0.2,0.2,0.2],"DiminishBack":[0.00,0.00,0.00,0.0,0.00],"DiminishLay":[0.01,0.01,0.01,0.01,0.01],"coolOffSeconds":1.0,"coolOffFactor":2.0}
-
-*UserID*: must match your userid
-*MarketID*:  must be provided
-*Runner*:  # of Runners / must match the # of runners of the market
-*Enabled*: must be set to true, disable a MM bye setting this to false.
-*InitShareLimit* (must be > 1):    Shares that are offered in one order.  Stake + Winnings from each order are 350mBTC
-*B* (must be > 10):    ~ is proportional to the maxium possible loss of the market maker if it starts at 50/50
-*CancelAll* (must be set to a future date):   Date where the market maker stops. Set to year 2100 if the mm should run forever
-*ShareStop* (must be > 1):   amount of exposure in shares before the market maker stops.  Should be set higher than  B in regular cases.
-*InitProb*:   the initial probability estimation for all runners
-*DiminishBack* (must be non-negative):   In general the LMSR market maker runs on 0% margin, i.e. it doesn't make any profit.  If more margin should be added, you can worsen the odds for each bid orders for every runner.  0.01 worsens bid odds from  80% to 81%  (or 1.25 to 1.2345)  for example. 
-*DiminishLay*:   same for all ask orders. 
-
-cool off adds temporary additional margin to markets with increased activity and should be applied to markets that can have exogenous shocks or where real probabilities can deviate from the initial probability distribution. 
-*coolOffFactor* (must be >=1):    if set to 4.0 the odds will worsen 4.0 times more than expected from the usual lmsr market maker.
-*coolOffSeconds* (must be >=1):    The time after which the coolOff period will be over. If set to 36000 the additional market margin will reduce step by step over an period of 10 hours. 
-
-If no cool off is required, set coolOffSeconds to 1.
-There is only one market maker per market. Setting one, overwrites the old one.
-
-## GETLMSRMARKETMAKER 
-
-retrieves all current LMSR Marketmaker
-
-> reqID: 70
-
-> reqData: -1
-
-response: json encoded marketID/LMSR Dictionary
+Returns:  "Market settled"  or some kind of "XError: ..."
