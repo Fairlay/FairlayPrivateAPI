@@ -34,6 +34,7 @@ If there is an error, the server returns an error message starting with **XError
 * [GET PUBLIC KEY](#getpublickey): "GETPUBLICKEY",
 * [CREATE ACCOUNT](#20): 20
 * [SET API ACCOUNT TO READONLY](#49): 49
+* [SET FORCE NONCE TO FALSE](#49): 44
 * [GET ORDERBOOK](#1): 1
 * [GET SERVER TIME](#2): 2
 * [GET ORDERBOOKS](#4): 4
@@ -118,6 +119,17 @@ You can also set your API Account #0 to read only. But be careful with it:
 ```
 signature|nonce|userid|49|
 ```
+
+## <a name="44">SET FORCE NONCE TO FALSE</a> (44)
+
+```
+signature|nonce|userid|44|false
+```
+
+this will allow you to submit requests without correct nonce.
+
+
+
 
 ## <a name="2">GET SERVER TIME </a>(2)
 
