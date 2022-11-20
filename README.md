@@ -27,6 +27,18 @@ The response is usually JSON-encoded:
 
 If there is an error, the server returns an error message starting with **XError:** for general errors or **YError:** if there was an error in a subtask of a bulk change order request. 
 
+```
+
+Please note the following rules regarding the order matching:
+
+When two open orders are matched, a Matched Order is created in the PENDING state.
+If the maker of the bet cancels his bet within a certain time period the bet goes into the state MAKERVOIDED and is void. The said time period is defined in each unmatched order and matched order as "makerCancelTime" or "makerCT". The maximum allowed time is also provided as VisDelay for each runner (which is usually 0, 3000 or 6000 milliseconds).
+Every time the maker of a bet exerts his right to (maker)void a bet, a fee is deducted from his account. This fee is currently 300 requests or 0.003mBTC but will be increased if needed.
+When a market is settled the orders go to one of the settled states VOID, WON, HALFWON, LOST or HALFLOST.
+Decimal market go into the state DECIMALRESULT while the settlement value DecResult will be set.
+Regarding Binary Markets, please note that if you place a lay (bid , 0) bet with stake 100 and odds 2.50 your liability will be 150mBTC. This is different to the Fairlay website, where the stake is always the liablity.
+
+```
 ### Remember to use (YOUR API ID*1000)+Request ID  on requests. Example: If you create your API accont on Fairlay, site will set an ID to it, usually first API ID is 1. So a request to Get Orderbook with this account will be 1001. 
 
 # API Calls
